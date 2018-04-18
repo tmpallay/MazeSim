@@ -126,15 +126,18 @@ void ModifiedFloodFill(unsigned char x, unsigned char y) {
 	//printf("Flood Fill algorithm has been entered with x: %d y: %d\n", x, y);
 
 	// Stack for Modified Flood Fill
-	CELL stack[sizex * sizey];
+	//CELL stack[sizex * sizey];
+	int stack[2][78];
+	// stack[0][index] = x value
+	// stack[1][index] = y value
 	//printf("Stack has been created!\n");
 	int stackIndex = 0;
 
 	// Variable will hold the smallest distance value of all neighboring cells
 	unsigned char disVal = 0;
 
-	stack[0].x = x;
-	stack[0].y = y;
+	stack[0][0] = x;
+	stack[1][0] = y;
 	//printf("First cell has been pushed to stack\n");
 
 	unsigned char xplaceholder;
@@ -144,23 +147,23 @@ void ModifiedFloodFill(unsigned char x, unsigned char y) {
 		//printf("Stack index: %d\n", stackIndex);
 		//printf("For current stack index x: %d y: %d\n", stack[stackIndex].x, stack[stackIndex].y);
 
-		int directionOfLeastDistance = determineMove(stack[stackIndex].x, stack[stackIndex].y);
+		int directionOfLeastDistance = determineMove(stack[0][stackIndex], stack[1][stackIndex]);
 		//printf("Call to determineMove succeeded with move to: %d\n", directionOfLeastDistance);
 		switch (directionOfLeastDistance) {
 			case 1:
-				disVal = maze[stack[stackIndex].x - 1][stack[stackIndex].y][0];
+				disVal = maze[stack[0][stackIndex] - 1][stack[1][stackIndex]][0];
 				//printf("disVal = %d\n", disVal);
 				break;
 			case 2:
-				disVal = maze[stack[stackIndex].x][stack[stackIndex].y + 1][0];
+				disVal = maze[stack[0][stackIndex]][stack[1][stackIndex] + 1][0];
 				//printf("disVal = %d\n", disVal);
 				break;
 			case 3:
-				disVal = maze[stack[stackIndex].x + 1][stack[stackIndex].y][0];
+				disVal = maze[stack[0][stackIndex] + 1][stack[1][stackIndex]][0];
 				//printf("disVal = %d\n", disVal);
 				break;
 			case 4:
-				disVal = maze[stack[stackIndex].x][stack[stackIndex].y - 1][0];
+				disVal = maze[stack[0][stackIndex]][stack[1][stackIndex] - 1][0];
 				//printf("disVal = %d\n", disVal);
 				break;
 		}
@@ -168,11 +171,11 @@ void ModifiedFloodFill(unsigned char x, unsigned char y) {
 
 		//printf("The distance Value in the current cell: %d\n", maze[x][y][0]);
 		//printf("disVal: %d\n", disVal);
-		if (maze[stack[stackIndex].x][stack[stackIndex].y][0] != (disVal + 1)) {
+		if (maze[stack[0][stackIndex]][stack[1][stackIndex]][0] != (disVal + 1)) {
 			//printf("DisVal check performed and WE NEED TO MAKE CHANGES\n");
 
 			// Current cell's distance value = 1 + smallest distance value of neighbor
-			maze[stack[stackIndex].x][stack[stackIndex].y][0] = disVal + 1;
+			maze[stack[0][stackIndex]][stack[1][stackIndex]][0] = disVal + 1;
 				
 				/* UPDATED DISTANCE ARRAY
 				printf("UPDATED DISTANCE ARRAY\n");
@@ -185,41 +188,41 @@ void ModifiedFloodFill(unsigned char x, unsigned char y) {
 				}
 				UPDATED DISTANCE ARRAY */
 
-			xplaceholder = stack[stackIndex].x;
-			yplaceholder = stack[stackIndex].y;
+			xplaceholder = stack[0][stackIndex];
+			yplaceholder = stack[1][stackIndex];
 			//printf("Placeholder Values assigned x: %d y: %d\n", xplaceholder, yplaceholder);
 
 			if ((xplaceholder > 0) && ((maze[xplaceholder][yplaceholder][1] & 8) == 0)) {
 				stackIndex++;
 				//printf("Attempting to push cell to North to stack at index %d\n", stackIndex);
-				stack[stackIndex].x = xplaceholder - 1;
-				stack[stackIndex].y = yplaceholder;
-				//printf("Cell to the North pushed to stack\n");
+				stack[0][stackIndex] = xplaceholder - 1;
+				stack[1][stackIndex] = yplaceholder;
+				printf("Cell to the North pushed to stack\n");
 			}
 			if ((yplaceholder < sizey - 1) && ((maze[xplaceholder][yplaceholder][1] & 4) == 0)) {
 				stackIndex++;
 				//printf("Attempting to push cell to East to stack at index %d\n", stackIndex);
-				stack[stackIndex].x = xplaceholder;
-				stack[stackIndex].y = yplaceholder + 1;
-				//printf("Cell to the East pushed to stack\n");
+				stack[0][stackIndex] = xplaceholder;
+				stack[1][stackIndex] = yplaceholder + 1;
+				printf("Cell to the East pushed to stack\n");
 			}
 			if ((xplaceholder < sizex - 1) && ((maze[xplaceholder][yplaceholder][1] & 2) == 0)) {
 				stackIndex++;
 				//printf("Attempting to push cell to South to stack at index %d\n", stackIndex);
-				stack[stackIndex].x = xplaceholder + 1;
-				stack[stackIndex].y = yplaceholder;
-				//printf("Cell to the South pushed to stack\n");
+				stack[0][stackIndex] = xplaceholder + 1;
+				stack[1][stackIndex] = yplaceholder;
+				printf("Cell to the South pushed to stack\n");
 			}
 			if ((yplaceholder > 0) && ((maze[xplaceholder][yplaceholder][1] & 1) == 0)) {
 				stackIndex++;
 				//printf("Attempting to push cell to West to stack at index %d\n", stackIndex);
-				stack[stackIndex].x = xplaceholder;
-				stack[stackIndex].y = yplaceholder - 1;
-				//printf("Cell to the West pushed to stack\n");
+				stack[0][stackIndex] = xplaceholder;
+				stack[1][stackIndex] = yplaceholder - 1;
+				printf("Cell to the West pushed to stack\n");
 			}
 		} else {
-			stack[stackIndex].x = 0;
-			stack[stackIndex].y = 0;
+			stack[0][stackIndex] = 0;
+			stack[1][stackIndex] = 0;
 			stackIndex--;
 		}
 
